@@ -1,0 +1,75 @@
+﻿@page "/confirm-email"
+@using System.ComponentModel.DataAnnotations
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
+        <h4 class="text-center text-primary mb-3">Enter OTP</h4>
+        <p class="text-center text-muted">We’ve sent a 6-digit code to your email.</p>
+
+        <EditForm Model="@otpModel" OnValidSubmit="OnSubmitAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">OTP Code</label>
+                <InputText @bind-Value="otpModel.Code" class="form-control text-center" maxlength="6" />
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit" disabled="@isSubmitting">
+                @(isSubmitting ? "Verifying..." : "Confirm")
+            </button>
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="alert @messageClass mt-3">@message</div>
+            }
+        </EditForm>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">Didn't get the code? <a href="#" @onclick="ResendCode">Resend</a></small>
+        </div>
+    </div>
+</div>
+
+@code {
+    private OtpModel otpModel = new();
+    private string message = string.Empty;
+    private string messageClass = string.Empty;
+    private bool isSubmitting = false;
+
+    private async Task OnSubmitAsync()
+    {
+        isSubmitting = true;
+        message = string.Empty;
+
+        // Simulate API call
+        await Task.Delay(1000);
+
+        if (otpModel.Code == "123456") // ✅ Replace this with actual backend check
+        {
+            message = "✅ Email confirmed successfully!";
+            messageClass = "alert-success";
+        }
+        else
+        {
+            message = "❌ Invalid OTP code.";
+            messageClass = "alert-danger";
+        }
+
+        isSubmitting = false;
+    }
+
+    private void ResendCode()
+    {
+        // Simulate resend (or call real API)
+        message = "🔁 A new OTP has been sent.";
+        messageClass = "alert-info";
+    }
+
+    public class OtpModel
+    {
+        [Required(ErrorMessage = "OTP is required.")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "OTP must be 6 digits.")]
+        public string? Code { get; set; }
+    }
+}

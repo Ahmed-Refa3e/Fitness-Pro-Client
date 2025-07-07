@@ -1,0 +1,67 @@
+﻿@page "/onlineTraining"
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Available Coaches</h2>
+
+    <!-- Centering Wrapper -->
+    <div class="d-flex justify-content-center">
+        <div class="w-100" style="max-width: 600px;">
+
+            <!-- Filters and Search -->
+            <div class="row g-3 mb-3 align-items-end">
+                <!-- Search Input -->
+                <div class="col-12">
+                    <input type="text" class="form-control" placeholder="Search by Coach name..." />
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-12 d-grid">
+                    <button class="btn btn-primary">Search</button>
+                </div>
+            </div>
+
+            <!-- Second Row: Filters -->
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <select class="form-select">
+                        <option selected disabled>Rating</option>
+                        <option>Cairo</option>
+                        <option>Alexandria</option>
+                        <option>Giza</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <select class="form-select">
+                        <option selected disabled>Sorting</option>
+                        <option>Nasr City</option>
+                        <option>Maadi</option>
+                        <option>Zamalek</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Gym Cards Grid -->
+    <div class="row g-4">
+        @for (int i = 1; i <= 9; i++)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="images/Coach.jpg" class="card-img-top" alt="Gym Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Coach Name @i</h5>
+                        <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+<Pagination />
+</div>
