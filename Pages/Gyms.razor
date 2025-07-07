@@ -1,5 +1,8 @@
 ﻿@page "/Gyms"
 @inject GymService GymService
+@inject LocationService LocationService
+
+<PageTitle>Gyms</PageTitle>
 
 <h2 class="text-center my-4">Available Gyms</h2>
 
@@ -9,13 +12,14 @@
             <input type="text" class="form-control" placeholder="Search by name..." @bind="search" />
         </div>
         <div class="col-md-3">
-            <select class="form-select" @bind="selectedGovernorate">
+            <select class="form-select" @bind="selectedGovernorate" @bind:event="oninput" @onchange="OnGovernorateChanged">
                 <option value="">All Governorates</option>
                 @foreach (var gov in governorates)
                 {
                     <option value="@gov">@gov</option>
                 }
             </select>
+
         </div>
         <div class="col-md-3">
             <select class="form-select" @bind="selectedCity">
@@ -58,7 +62,7 @@
                             <h5 class="card-title">@gym.GymName</h5>
                             <p class="card-text text-muted">@gym.Address, @gym.City</p>
                             <p class="card-text fw-bold">@gym.MonthlyPrice EGP / month</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <NavLink href="@($"/Gyms/{gym.GymID}")" class="btn btn-outline-primary btn-sm">View Details</NavLink>
                         </div>
                     </div>
                 </div>
@@ -97,12 +101,13 @@
     private string? selectedGovernorate;
     private string? selectedCity;
 
-    private List<string> governorates = new() { "Cairo", "Alexandria", "Giza", "Hurghada", "Sharm El Sheikh" };
-    private List<string> cities = new() { "Nasr City", "Maadi", "Zamalek", "6th October", "Heliopolis", "Shubra" };
+    private List<string> governorates = new();
+    private List<string> cities = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadPage(currentPage);
+        governorates = await LocationService.GetGovernoratesAsync();
     }
 
     private async Task ApplyFilters()
@@ -127,4 +132,12 @@
         return string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
     }
 
+    private async Task OnGovernorateChanged(ChangeEventArgs e)
+    {
+        selectedGovernorate = e.Value?.ToString();
+        cities = string.IsNullOrEmpty(selectedGovernorate) 
+            ? new List<string>() 
+            : await LocationService.GetCitiesAsync(selectedGovernorate);
+        selectedCity = null; 
+    }
 }

@@ -1,73 +1,95 @@
-﻿@page "/Gyms/1"
+﻿@page "/Gyms/{id:int}"
+@inject GymService GymService
 
-<div class="container my-5">
-    <div class="row g-4">
-        <!-- Image Section -->
-        <div class="col-md-6 text-center">
-            <img src="images/Gym.jpg" class="img-fluid rounded shadow" alt="Gym Image" />
-        </div>
-
-        <!-- Details Section -->
-        <div class="col-md-6">
-            <h2 class="fw-bold text-primary">Power House Gym</h2>
-            <p class="text-muted">Location: Cairo - Nasr City</p>
-            <p><strong>Phone:</strong> +20 100 123 4567</p>
-            <p><strong>Head Coach:</strong> Captain Ahmed Elrefaie</p>
-
-            <!-- Prices Section -->
-            <div class="row row-cols-1 row-cols-md-2 g-3 mt-3">
-                <div class="col">
-                    <div class="card border-primary h-100">
-                        <div class="card-body">
-                            <h6 class="card-title text-primary">Monthly</h6>
-                            <p class="card-text fw-bold">500 EGP</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card border-primary h-100">
-                        <div class="card-body">
-                            <h6 class="card-title text-primary">6 Months</h6>
-                            <p class="card-text fw-bold">2700 EGP</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card border-primary h-100">
-                        <div class="card-body">
-                            <h6 class="card-title text-primary">Yearly</h6>
-                            <p class="card-text fw-bold">5000 EGP</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card border-primary h-100">
-                        <div class="card-body">
-                            <h6 class="card-title text-primary">Session</h6>
-                            <p class="card-text fw-bold">100 EGP</p>
-                        </div>
-                    </div>
-                </div>
+@if(gym == null){
+    <p class="text-center text-muted mt-5">Loading gym details...</p>
+}
+else
+{
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Image Section -->
+            <div class="col-md-6 text-center">
+                <img src="@GetImage(gym!.PictureUrl)" class="img-fluid rounded shadow" alt="Gym Image" />
             </div>
 
-            <!-- Description -->
-            <p class="mt-4">
-                <strong>Description:</strong> <br />
-                Power House is a state-of-the-art gym offering top equipment, professional trainers, and flexible plans to help you achieve your fitness goals.
-            </p>
+            <!-- Details Section -->
+            <div class="col-md-6">
+                <h2 class="fw-bold text-primary">@gym.GymName</h2>
+                <p class="text-muted">Location: @gym.Address</p>
+                <p><strong>Phone:</strong> @gym.PhoneNumber</p>
+                <p><strong>Head Coach:</strong> Captain @gym.CoachFullName</p>
 
-            <!-- Features -->
-            <div class="mt-4">
-                <strong>Features:</strong>
-                <ul class="list-group list-group-flush mt-2">
-                    <li class="list-group-item">✔️ Personal Trainers</li>
-                    <li class="list-group-item">✔️ Sauna & Steam Room</li>
-                    <li class="list-group-item">✔️ Nutrition Plans</li>
-                    <li class="list-group-item">✔️ 24/7 Access</li>
-                </ul>
+                <!-- Prices Section -->
+                <div class="row row-cols-1 row-cols-md-2 g-3 mt-3">
+                    <div class="col">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Monthly</h6>
+                                <p class="card-text fw-bold">@gym.MonthlyPrice EGP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">6 Months</h6>
+                                <p class="card-text fw-bold">@gym.FortnightlyPrice EGP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Yearly</h6>
+                                <p class="card-text fw-bold">@gym.YearlyPrice EGP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Session</h6>
+                                <p class="card-text fw-bold">@gym.SessionPrice EGP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <p class="mt-4">
+                    <strong>Description:</strong> <br />
+                    @gym.Description
+                </p>
+
+                <!-- Features -->
+                <div class="mt-4">
+                    <strong>Features:</strong>
+                    <ul class="list-group list-group-flush mt-2">
+                        <li class="list-group-item">✔️ Personal Trainers</li>
+                        <li class="list-group-item">✔️ Sauna & Steam Room</li>
+                        <li class="list-group-item">✔️ Nutrition Plans</li>
+                        <li class="list-group-item">✔️ 24/7 Access</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-success mt-4">Join Now</button>
             </div>
-
-            <button class="btn btn-success mt-4">Join Now</button>
         </div>
     </div>
-</div>
+}
+
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private GymDetailsDto? gym;
+
+    protected override async Task OnInitializedAsync()
+    {
+        gym = await GymService.GetGymByIdAsync(id);
+    }
+
+    private string GetImage(string? url) =>
+        string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
+}

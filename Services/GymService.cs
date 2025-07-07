@@ -20,5 +20,10 @@ namespace Fitness_Pro_Client.Services
 
             return await http.GetFromJsonAsync<PagedResponse>($"api/Gym{query}")!;
         }
+
+        public async Task<GymDetailsDto?> GetGymByIdAsync(int id)
+        {
+            return await http.GetFromJsonAsync<GymDetailsDto>($"api/Gym/{id}");
+        }
     }
 }

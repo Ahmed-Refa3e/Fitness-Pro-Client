@@ -10,5 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://fitnesspro.runasp.net/") });
 
 builder.Services.AddScoped<GymService>();
+builder.Services.AddScoped<LocationService>();
+
 
 await builder.Build().RunAsync();
