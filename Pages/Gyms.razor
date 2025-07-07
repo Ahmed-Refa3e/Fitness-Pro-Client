@@ -1,75 +1,130 @@
 ﻿@page "/Gyms"
+@inject GymService GymService
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">Available Gyms</h2>
+<h2 class="text-center my-4">Available Gyms</h2>
 
-    <!-- Centering Wrapper -->
-    <div class="d-flex justify-content-center">
-        <div class="w-100" style="max-width: 600px;">
-
-            <!-- Filters and Search -->
-            <div class="row g-3 mb-3 align-items-end">
-                <!-- Search Input -->
-                <div class="col-12">
-                    <input type="text" class="form-control" placeholder="Search by Gym name..." />
-                </div>
-
-                <!-- Search Button -->
-                <div class="col-12 d-grid">
-                    <button class="btn btn-primary">Search</button>
-                </div>
-            </div>
-
-            <!-- Second Row: Filters -->
-            <div class="row g-3 mb-4">
-                <div class="col-4">
-                    <select class="form-select">
-                        <option selected disabled>Governorate</option>
-                        <option>Cairo</option>
-                        <option>Alexandria</option>
-                        <option>Giza</option>
-                    </select>
-                </div>
-                <div class="col-4">
-                    <select class="form-select">
-                        <option selected disabled>City</option>
-                        <option>Nasr City</option>
-                        <option>Maadi</option>
-                        <option>Zamalek</option>
-                    </select>
-                </div>
-                <div class="col-4">
-                    <select class="form-select">
-                        <option selected disabled>Sorting</option>
-                        <option>Nasr City</option>
-                        <option>Maadi</option>
-                        <option>Zamalek</option>
-                    </select>
-                </div>
-            </div>
-
+<div class="container py-3">
+    <div class="row g-3 mb-4 align-items-end">
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search by name..." @bind="search" />
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" @bind="selectedGovernorate">
+                <option value="">All Governorates</option>
+                @foreach (var gov in governorates)
+                {
+                    <option value="@gov">@gov</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" @bind="selectedCity">
+                <option value="">All Cities</option>
+                @foreach (var city in cities)
+                {
+                    <option value="@city">@city</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary" @onclick="ApplyFilters">Apply</button>
         </div>
     </div>
 
 
-
-
-    <!-- Gym Cards Grid -->
-    <div class="row g-4">
-        @for (int i = 1; i <= 9; i++)
-        {
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="images/Gym.jpg" class="card-img-top" alt="Gym Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Gym Name @i</h5>
-                        <p class="card-text text-muted">Location: Cairo, Nasr City</p>
-                        <p class="card-text fw-bold">Price: 500 EGP/month</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+    @if (gyms == null)
+    {
+        <p class="text-center">Loading gyms...</p>
+    }
+    else if (!gyms.Data.Any())
+    {
+        <p class="text-center text-muted">No gyms found.</p>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var gym in gyms.Data)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@GetValidImage(gym.PictureUrl)"
+                             loading="lazy"
+                             class="card-img-top"
+                             alt="@gym.GymName"
+                             width="100"
+                             height="200"
+                             onerror="this.onerror=null; this.src='images/Default.png';">
+                        <div class="card-body">
+                            <h5 class="card-title">@gym.GymName</h5>
+                            <p class="card-text text-muted">@gym.Address, @gym.City</p>
+                            <p class="card-text fw-bold">@gym.MonthlyPrice EGP / month</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-    <Pagination />
+            }
+        </div>
+
+        <!-- Pagination --> 
+        <nav class="mt-4 d-flex justify-content-center" aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => LoadPage(currentPage - 1)">Previous</button>
+                </li>
+
+                @for (int i = 1; i <= gyms.TotalPages; i++)
+                {
+                    var pageNumber = i;
+                    <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                        <button type="button" class="page-link" @onclick="() => LoadPage(pageNumber)">@pageNumber</button>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage == gyms.TotalPages ? "disabled" : "")">
+                    <button type="button" class="page-link" @onclick="() => LoadPage(currentPage + 1)">Next</button>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
+
+@code {
+    private PagedResponse? gyms;
+
+    private int currentPage = 1;
+
+    private string? search;
+    private string? selectedGovernorate;
+    private string? selectedCity;
+
+    private List<string> governorates = new() { "Cairo", "Alexandria", "Giza", "Hurghada", "Sharm El Sheikh" };
+    private List<string> cities = new() { "Nasr City", "Maadi", "Zamalek", "6th October", "Heliopolis", "Shubra" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPage(currentPage);
+    }
+
+    private async Task ApplyFilters()
+    {
+        currentPage = 1;
+        await LoadPage(currentPage);
+    }
+
+    private async Task LoadPage(int page)
+    {
+        currentPage = page;
+        gyms = await GymService.GetGymsAsync(
+            page: page,
+            pageSize: 9,
+            GymName: search,
+            governorate: selectedGovernorate,
+            city: selectedCity
+        );
+    }
+    private string GetValidImage(string? url)
+    {
+        return string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
+    }
+
+}
