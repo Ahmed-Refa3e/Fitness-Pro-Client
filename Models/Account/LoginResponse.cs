@@ -1,4 +1,4 @@
-﻿namespace Fitness_Pro_Client.Models
+﻿namespace Fitness_Pro_Client.Models.Account
 {
     public class LoginResponse
     {

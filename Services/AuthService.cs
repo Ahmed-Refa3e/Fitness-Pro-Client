@@ -1,4 +1,4 @@
-﻿using Fitness_Pro_Client.Models;
+﻿using Fitness_Pro_Client.Models.Account;
 using System.Net.Http.Json;
 
 namespace Fitness_Pro_Client.Services

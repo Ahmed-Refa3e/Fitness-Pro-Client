@@ -1,4 +1,5 @@
-﻿using Fitness_Pro_Client.Models;
+﻿using Fitness_Pro_Client.Models.General;
+using Fitness_Pro_Client.Models.OnlineTraining;
 using System.Net.Http.Json;
 
 namespace Fitness_Pro_Client.Services
