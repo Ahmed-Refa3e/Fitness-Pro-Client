@@ -5,7 +5,7 @@ namespace Fitness_Pro_Client.Services
 {
     public class GymService(HttpClient http)
     {
-        public async Task<PagedResponse?> GetGymsAsync(int page = 1, int pageSize = 9, string? GymName = null, string? governorate = null, string? city = null)
+        public async Task<PagedGymResponse?> GetGymsAsync(int page = 1, int pageSize = 9, string? GymName = null, string? governorate = null, string? city = null)
         {
             var query = $"?pageNumber={page}&pageSize={pageSize}";
 
@@ -18,7 +18,7 @@ namespace Fitness_Pro_Client.Services
             if (!string.IsNullOrWhiteSpace(city))
                 query += $"&city={Uri.EscapeDataString(city)}";
 
-            return await http.GetFromJsonAsync<PagedResponse>($"api/Gym{query}")!;
+            return await http.GetFromJsonAsync<PagedGymResponse>($"api/Gym{query}")!;
         }
 
         public async Task<GymDetailsDto?> GetGymByIdAsync(int id)

@@ -1,6 +1,6 @@
 ﻿namespace Fitness_Pro_Client.Models
 {
-    public class PagedResponse
+    public class PagedGymResponse
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

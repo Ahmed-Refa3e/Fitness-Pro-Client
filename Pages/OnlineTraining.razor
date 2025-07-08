@@ -1,67 +1,121 @@
 ﻿@page "/onlineTraining"
+@inject CoachService coachService
 
 <div class="container py-5">
     <h2 class="text-center mb-4">Available Coaches</h2>
 
-    <!-- Centering Wrapper -->
-    <div class="d-flex justify-content-center">
-        <div class="w-100" style="max-width: 600px;">
-
-            <!-- Filters and Search -->
-            <div class="row g-3 mb-3 align-items-end">
-                <!-- Search Input -->
-                <div class="col-12">
-                    <input type="text" class="form-control" placeholder="Search by Coach name..." />
-                </div>
-
-                <!-- Search Button -->
-                <div class="col-12 d-grid">
-                    <button class="btn btn-primary">Search</button>
-                </div>
-            </div>
-
-            <!-- Second Row: Filters -->
-            <div class="row g-3 mb-4">
-                <div class="col-6">
-                    <select class="form-select">
-                        <option selected disabled>Rating</option>
-                        <option>Cairo</option>
-                        <option>Alexandria</option>
-                        <option>Giza</option>
-                    </select>
-                </div>
-                <div class="col-6">
-                    <select class="form-select">
-                        <option selected disabled>Sorting</option>
-                        <option>Nasr City</option>
-                        <option>Maadi</option>
-                        <option>Zamalek</option>
-                    </select>
-                </div>
-            </div>
-
+    <!-- Filters -->
+    <div class="row g-3 mb-4 align-items-end justify-content-center">
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search by Coach name..." @bind="search" />
+        </div>
+        <div class="col-md-3">
+            <label>Min Rating: @minRating</label>
+            <input type="range" class="form-range" min="0" max="5" step="0.1" @bind="minRating" />
+        </div>
+        <div class="col-md-3">
+            <label>Max Rating: @maxRating</label>
+            <input type="range" class="form-range" min="0" max="5" step="0.1" @bind="maxRating" />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary" @onclick="ApplyFilters">Apply</button>
         </div>
     </div>
 
+    <!-- Cards -->
+    @if (coaches == null)
+    {
+        <p class="text-center">Loading coaches...</p>
+    }
+    else if (!coaches.Data.Any())
+    {
+        <p class="text-center text-muted">No coaches found.</p>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var coach in coaches.Data)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@GetValidImage(coach.ProfilePictureUrl)"
+                             class="card-img-top"
+                             style="height: 220px; width: 220px; object-fit: cover; border-radius: 50%; margin: auto;"
+                             alt="@coach.FullName"
+                             onerror="this.onerror=null;this.src='images/Coach.jpg';" />
 
 
 
 
-    <!-- Gym Cards Grid -->
-    <div class="row g-4">
-        @for (int i = 1; i <= 9; i++)
-        {
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="images/Coach.jpg" class="card-img-top" alt="Gym Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Coach Name @i</h5>
-                        <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                        <div class="card-body">
+                            <h5 class="card-title">@coach.FullName</h5>
+                            <p class="card-text text-muted">Rating: @coach.Rating</p>
+                            <NavLink class="btn btn-outline-primary btn-sm"
+                                     href="@($"/coach-details/{coach.Id}")">
+                                View Details
+                            </NavLink>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
 
-<Pagination />
+        <!-- Pagination -->
+        <nav class="mt-4 d-flex justify-content-center" aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => LoadPage(currentPage - 1)">Previous</button>
+                </li>
+
+                @for (int i = 1; i <= coaches.TotalPages; i++)
+                {
+                    var pageNumber = i;
+                    <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                        <button type="button" class="page-link" @onclick="() => LoadPage(pageNumber)">@pageNumber</button>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage == coaches.TotalPages ? "disabled" : "")">
+                    <button type="button" class="page-link" @onclick="() => LoadPage(currentPage + 1)">Next</button>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
+
+@code {
+    private PagedCoachResponse? coaches;
+
+    private int currentPage = 1;
+    private string? search;
+    private double? minRating = null ;
+    private double? maxRating = null ;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPage(currentPage);
+    }
+
+    private async Task ApplyFilters()
+    {
+        currentPage = 1;
+        await LoadPage(currentPage);
+    }
+
+    private async Task LoadPage(int page)
+    {
+        currentPage = page;
+        coaches = await coachService.GetCoachesAsync(
+            page: page,
+            pageSize: 9,
+            CoachName: search,
+            MinRating: minRating,
+            MaxRating: maxRating
+        );
+    }
+
+    private string GetValidImage(string? url)
+    {
+        return string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
+    }
+}
