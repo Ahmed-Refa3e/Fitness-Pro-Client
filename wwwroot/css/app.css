@@ -101,3 +101,14 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.package-card {
+    background-color: #f8f9fa;
+    transition: all 0.3s ease-in-out;
+}
+
+    .package-card:hover {
+        background-color: #e3eafc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+    }

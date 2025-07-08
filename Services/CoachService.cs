@@ -29,5 +29,14 @@ namespace Fitness_Pro_Client.Services
         {
             return await http.GetFromJsonAsync<ApiResponse<CoachDetailsDto>>($"api/User/CoachDetails/{id}");
         }
+
+        public async Task<List<OnlineTrainingDto>?> GetGroupOnlineTrainingByCoachIdAsync(string id)
+        {
+            return await http.GetFromJsonAsync<List<OnlineTrainingDto>>($"api/OnlineTraining/ByCoachId/Group?CoachId={id}");
+        }
+        public async Task<List<OnlineTrainingDto>?> GetPrivateOnlineTrainingByCoachIdAsync(string id)
+        {
+            return await http.GetFromJsonAsync<List<OnlineTrainingDto>>($"api/OnlineTraining/ByCoachId/Private?CoachId={id}");
+        }
     }
 }
