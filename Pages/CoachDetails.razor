@@ -1,94 +1,138 @@
-﻿@page "/coach-details/{id}"  
-@inject CoachService CoachService  
+﻿@page "/coach-details/{id}"
+@inject CoachService CoachService
+@inject PaymentService PaymentService
+@inject AuthState AuthState
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<div class="container py-5">  
-    @if (Coach == null)  
-    {  
-        <p class="text-center">Loading coach details...</p>  
-    }  
-    else if (Coach.Data == null)  
-    {  
-        <p class="text-center text-danger">Coach not found.</p>  
-    }  
-    else  
-    {  
-        <div class="text-center mb-5">  
-            <img src="@ImagesHelper.GetImageUrl(Coach.Data.ProfilePictureUrl)"  
-                 class="rounded-circle mb-3"  
-                 style="width: 150px; height: 150px; object-fit: cover;"  
-                 alt="Coach Image" />  
+<div class="container py-5">
+    @if (Coach == null)
+    {
+        <p class="text-center">Loading coach details...</p>
+    }
+    else if (Coach.Data == null)
+    {
+        <p class="text-center text-danger">Coach not found.</p>
+    }
+    else
+    {
+        <div class="text-center mb-5">
+            <img src="@ImagesHelper.GetImageUrl(Coach.Data.ProfilePictureUrl)"
+                 class="rounded-circle mb-3"
+                 style="width: 150px; height: 150px; object-fit: cover;"
+                 alt="Coach Image" />
 
-            <h3 class="fw-bold">Coach @Coach.Data.FullName</h3>  
-            <p class="text-muted w-75 mx-auto">@Coach.Data.Bio</p>  
-        </div>  
+            <h3 class="fw-bold">Coach @Coach.Data.FullName</h3>
+            <p class="text-muted w-75 mx-auto">@Coach.Data.Bio</p>
+        </div>
 
-        <div class="d-flex justify-content-end mb-4">  
-            <select class="form-select w-auto" @bind="selectedType">  
-                <option value="Group">Group</option>  
-                <option value="Private">Private</option>  
-            </select>  
-        </div>  
+        <div class="d-flex justify-content-end mb-4">
+            <select class="form-select w-auto" @bind="selectedType">
+                <option value="Group">Group</option>
+                <option value="Private">Private</option>
+            </select>
+        </div>
 
-        @* OnlineTraining section *@  
-        <div class="row g-4">  
-            @if (!CurrentTrainings.Any())  
-            {  
-                <p class="text-center text-muted">No @selectedType trainings available.</p>  
-            }  
-            else  
-            {  
-                @foreach (var training in CurrentTrainings)  
-                {  
-                    <div class="col-md-3">  
-                        <div class="card h-100 text-center border border-primary rounded-4 package-card transition">  
-                            <div class="card-body d-flex flex-column justify-content-between">  
-                                <div>  
-                                    <h5 class="card-title fw-bold">@training.Title</h5>  
-                                    <p class="text-primary text-decoration-underline">  
-                                        @training.NoOfSessionsPerWeek sessions / week  
-                                    </p>  
-                                    <p class="fw-bold mb-1">@((int)training.Price) EGP</p>  
-                                    <p class="fw-bold">session duration: @training.DurationOfSession min</p>  
-                                    <p class="card-text small text-muted">@training.Description</p>  
-                                </div>  
-                                <div>  
-                                    <button class="btn btn-primary w-100 mt-3">  
-                                        Subscribe Now  
-                                    </button>  
-                                </div>  
-                            </div>  
-                        </div>  
-                    </div>  
-                }  
-            }  
-        </div>  
-    }  
-</div>  
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @errorMessage
+            </div>
+        }
 
-@code {  
-    [Parameter]  
-    public string Id { get; set; } = null!;  
+        @* OnlineTraining section *@
+        <div class="row g-4">
+            @if (!CurrentTrainings.Any())
+            {
+                <p class="text-center text-muted">No @selectedType trainings available.</p>
+            }
+            else
+            {
+                @foreach (var training in CurrentTrainings)
+                {
+                    <div class="col-md-3">
+                        <div class="card h-100 text-center border border-primary rounded-4 package-card transition">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title fw-bold">@training.Title</h5>
+                                    <p class="text-primary text-decoration-underline">
+                                        @training.NoOfSessionsPerWeek sessions / week
+                                    </p>
+                                    <p class="fw-bold mb-1">@((int)training.Price) EGP</p>
+                                    <p class="fw-bold">session duration: @training.DurationOfSession min</p>
+                                    <p class="card-text small text-muted">@training.Description</p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary w-100 mt-3" @onclick="() => HandleSubscription(training.Id)">
+                                        Subscribe Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
 
-    private ApiResponse<CoachDetailsDto>? Coach;  
-    private List<OnlineTrainingDto>? groupTrainings;  
-    private List<OnlineTrainingDto>? privateTrainings;  
-    private string selectedType = "Group";   
+@code {
+    [Parameter]
+    public string Id { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()  
-    {  
-        Coach = await CoachService.GetCoachByIdAsync(Id);  
-        groupTrainings = new();  
-        privateTrainings = new();  
+    private ApiResponse<CoachDetailsDto>? Coach;
+    private List<OnlineTrainingDto>? groupTrainings;
+    private List<OnlineTrainingDto>? privateTrainings;
+    private string selectedType = "Group";
+    private string? errorMessage;
 
-        List<OnlineTrainingDto>? group = await CoachService.GetGroupOnlineTrainingByCoachIdAsync(Id);  
-        if (group is not null)  
-            groupTrainings= group;  
+    protected override async Task OnInitializedAsync()
+    {
+        Coach = await CoachService.GetCoachByIdAsync(Id);
+        groupTrainings = new();
+        privateTrainings = new();
 
-        List<OnlineTrainingDto>? privates = await CoachService.GetPrivateOnlineTrainingByCoachIdAsync(Id);  
-        if (privates is not null)  
-            privateTrainings = privates;  
-    }  
+        List<OnlineTrainingDto>? group = await CoachService.GetGroupOnlineTrainingByCoachIdAsync(Id);
+        if (group is not null)
+            groupTrainings = group;
 
-    private IEnumerable<OnlineTrainingDto> CurrentTrainings =>  
-        selectedType == "Group" ? groupTrainings ?? [] : privateTrainings ?? [];  
+        List<OnlineTrainingDto>? privates = await CoachService.GetPrivateOnlineTrainingByCoachIdAsync(Id);
+        if (privates is not null)
+            privateTrainings = privates;
+    }
+
+    private IEnumerable<OnlineTrainingDto> CurrentTrainings =>
+        selectedType == "Group" ? groupTrainings ?? [] : privateTrainings ?? [];
+
+    private async Task HandleSubscription(int trainingId)
+    {
+        errorMessage = null;
+
+        var isLoggedIn = await AuthState.IsLoggedInAsync();
+        var role = await AuthState.GetUserRoleAsync();
+
+        if (!isLoggedIn)
+        {
+            errorMessage = "⚠️ You must be logged in to subscribe.";
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        if (role != "Trainee")
+        {
+            errorMessage = "❌ Only Trainee users can subscribe to training packages.";
+            return;
+        }
+
+        var paymentUrl = await PaymentService.CreatePaymentSessionAsync(trainingId);
+
+        if (!string.IsNullOrWhiteSpace(paymentUrl))
+        {
+            Navigation.NavigateTo(paymentUrl, forceLoad: true);
+        }
+        else
+        {
+            errorMessage = "⚠️ Failed to initiate payment session. Please try again later.";
+        }
+    }
 }
