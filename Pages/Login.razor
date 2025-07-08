@@ -1,5 +1,4 @@
 ﻿@page "/login"
-@using System.ComponentModel.DataAnnotations
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
@@ -40,15 +39,5 @@
     {
         // Logic to call API or validate user
         Console.WriteLine($"Logging in: {loginModel.Email}, {loginModel.Password}");
-    }
-
-    public class LoginModel
-    {
-        [Required]
-        [EmailAddress]
-        public string? Email { get; set; }
-
-        [Required]
-        public string? Password { get; set; }
     }
 }

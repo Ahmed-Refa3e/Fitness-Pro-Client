@@ -10,7 +10,7 @@ else
         <div class="row g-4">
             <!-- Image Section -->
             <div class="col-md-6 text-center">
-                <img src="@GetImage(gym!.PictureUrl)" class="img-fluid rounded shadow" alt="Gym Image" />
+                <img src="@ImagesHelper.GetImageUrl(gym!.PictureUrl)" class="img-fluid rounded shadow" alt="Gym Image" />
             </div>
 
             <!-- Details Section -->
@@ -89,7 +89,4 @@ else
     {
         gym = await GymService.GetGymByIdAsync(id);
     }
-
-    private string GetImage(string? url) =>
-        string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
 }

@@ -38,7 +38,7 @@
             {
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="@GetValidImage(coach.ProfilePictureUrl)"
+                        <img src="@ImagesHelper.GetImageUrl(coach.ProfilePictureUrl)"
                              class="card-img-top"
                              style="height: 220px; width: 220px; object-fit: cover; border-radius: 50%; margin: auto;"
                              alt="@coach.FullName"
@@ -112,10 +112,5 @@
             MinRating: minRating,
             MaxRating: maxRating
         );
-    }
-
-    private string GetValidImage(string? url)
-    {
-        return string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
     }
 }

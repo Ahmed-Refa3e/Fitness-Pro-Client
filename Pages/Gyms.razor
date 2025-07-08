@@ -51,7 +51,7 @@
             {
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="@GetValidImage(gym.PictureUrl)"
+                        <img src="@ImagesHelper.GetImageUrl(gym.PictureUrl)"
                              loading="lazy"
                              class="card-img-top"
                              alt="@gym.GymName"
@@ -126,10 +126,6 @@
             governorate: selectedGovernorate,
             city: selectedCity
         );
-    }
-    private string GetValidImage(string? url)
-    {
-        return string.IsNullOrWhiteSpace(url) ? "images/Default.png" : url;
     }
 
     private async Task OnGovernorateChanged(ChangeEventArgs e)

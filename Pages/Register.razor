@@ -1,5 +1,6 @@
 ﻿@page "/register"
-@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
@@ -55,6 +56,10 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100 mt-4">Sign Up</button>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">@errorMessage</div>
+            }
 
             <div class="mt-3 text-center">
                 <small>Already have an account? <a href="/login">Login</a></small>
@@ -64,35 +69,33 @@
 </div>
 
 @code {
-    private RegisterModel registerModel = new();
+    private RegisterModel registerModel = new()
+        {
+        Gender = "",
+        Role = ""    
+    };
+    private string? errorMessage;
 
-    private void HandleRegister()
+    private async Task HandleRegister()
     {
-        // Handle registration logic
-        Console.WriteLine($"Registering {registerModel.FirstName} {registerModel.LastName} as {registerModel.Role}");
-    }
+        bool success = false;
 
-    public class RegisterModel
-    {
-        [Required]
-        public string? FirstName { get; set; }
+        if (registerModel.Role == "Coach")
+        {
+            success = await AuthService.RegisterCoachAsync(registerModel);
+        }
+        else if (registerModel.Role == "Trainee")
+        {
+            success = await AuthService.RegisterTraineeAsync(registerModel);
+        }
 
-        [Required]
-        public string? LastName { get; set; }
-
-        [Required]
-        public string? Gender { get; set; }
-
-        [Required]
-        public DateTime? DateOfBirth { get; set; }
-
-        [Required, EmailAddress]
-        public string? Email { get; set; }
-
-        [Required]
-        public string? Password { get; set; }
-
-        [Required]
-        public string? Role { get; set; }
+        if (success)
+        {
+            Navigation.NavigateTo($"/confirm-email?email={Uri.EscapeDataString(registerModel.Email!)}");
+        }
+        else
+        {
+            errorMessage = "Registration failed. This email is already taken, please choose another..";
+        }
     }
 }

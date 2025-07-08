@@ -1,5 +1,6 @@
 ﻿@page "/confirm-email"
-@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
@@ -37,22 +38,36 @@
     private string messageClass = string.Empty;
     private bool isSubmitting = false;
 
+    protected override void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var emailFromQuery = query.Get("email");
+
+        if (!string.IsNullOrWhiteSpace(emailFromQuery))
+        {
+            otpModel.Email = emailFromQuery;
+        }
+    }
+
     private async Task OnSubmitAsync()
     {
         isSubmitting = true;
         message = string.Empty;
 
-        // Simulate API call
-        await Task.Delay(1000);
+        var result = await AuthService.ConfirmEmailAsync(otpModel.Email!, otpModel.Code!);
 
-        if (otpModel.Code == "123456") // ✅ Replace this with actual backend check
+        if (result.IsSuccess)
         {
             message = "✅ Email confirmed successfully!";
             messageClass = "alert-success";
+
+            await Task.Delay(1500);
+            Navigation.NavigateTo("/login");
         }
         else
         {
-            message = "❌ Invalid OTP code.";
+            message = $"❌ Something went wrong. Please try again later.";
             messageClass = "alert-danger";
         }
 
@@ -61,15 +76,8 @@
 
     private void ResendCode()
     {
-        // Simulate resend (or call real API)
+        // TODO: Call backend to resend OTP
         message = "🔁 A new OTP has been sent.";
         messageClass = "alert-info";
-    }
-
-    public class OtpModel
-    {
-        [Required(ErrorMessage = "OTP is required.")]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "OTP must be 6 digits.")]
-        public string? Code { get; set; }
     }
 }
