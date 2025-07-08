@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Fitness_Pro_Client;
 using Fitness_Pro_Client.Services;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,6 +14,8 @@ builder.Services.AddScoped<GymService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<CoachService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddBlazoredLocalStorage();
+
 
 
 await builder.Build().RunAsync();

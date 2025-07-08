@@ -15,11 +15,19 @@ namespace Fitness_Pro_Client.Services
             var response = await http.PostAsJsonAsync("api/Account/RegisterTrainee", model);
             return response.IsSuccessStatusCode;
         }
-        public async Task<bool> LoginAsync(LoginModel model)
+        public async Task<LoginResponse?> LoginAsync(LoginRequest loginRequest)
         {
-            var response = await http.PostAsJsonAsync("api/Account/Login", model);
-            return response.IsSuccessStatusCode;
+            var response = await http.PostAsJsonAsync("api/Account/Login", loginRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                return result;
+            }
+
+            return null;
         }
+
 
         public async Task<(bool IsSuccess, string? ErrorMessage)> ConfirmEmailAsync(string email, string code)
         {

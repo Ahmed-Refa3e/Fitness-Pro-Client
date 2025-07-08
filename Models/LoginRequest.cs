@@ -2,7 +2,7 @@
 
 namespace Fitness_Pro_Client.Models
 {
-    public class LoginModel
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]
