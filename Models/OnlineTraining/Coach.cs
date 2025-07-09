@@ -8,7 +8,7 @@
         public string? Bio { get; set; }
         public string Gender { get; set; } = string.Empty;
         public DateTime JoinedDate { get; set; }
-        public int Rating { get; set; }
+        public Double Rating { get; set; }
     }
 
 }

@@ -22,7 +22,7 @@
         public string CoachFullName { get; set; } = string.Empty;
         public string? CoachProfilePictureUrl { get; set; }
 
-        public int AverageRating { get; set; }
+        public Double AverageRating { get; set; }
         public int SubscriptionsCount { get; set; }
     }
 }

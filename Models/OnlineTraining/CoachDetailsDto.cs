@@ -2,7 +2,7 @@
 {
     public class CoachDetailsDto
     {
-        public string Id { get; set; } 
+        public string Id { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string? ProfilePictureUrl { get; set; }
         public string? Bio { get; set; }
