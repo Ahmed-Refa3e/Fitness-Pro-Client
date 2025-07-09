@@ -70,25 +70,9 @@
             }
         </div>
 
-        <!-- Pagination --> 
+        <!-- Pagination Section -->
         <nav class="mt-4 d-flex justify-content-center" aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                    <button class="page-link" @onclick="() => LoadPage(currentPage - 1)">Previous</button>
-                </li>
-
-                @for (int i = 1; i <= gyms.TotalPages; i++)
-                {
-                    var pageNumber = i;
-                    <li class="page-item @(currentPage == pageNumber ? "active" : "")">
-                        <button type="button" class="page-link" @onclick="() => LoadPage(pageNumber)">@pageNumber</button>
-                    </li>
-                }
-
-                <li class="page-item @(currentPage == gyms.TotalPages ? "disabled" : "")">
-                    <button type="button" class="page-link" @onclick="() => LoadPage(currentPage + 1)">Next</button>
-                </li>
-            </ul>
+            <Pagination CurrentPage="@currentPage" TotalPages="@gyms.TotalPages" OnPageChanged="LoadPage" />
         </nav>
     }
 </div>
