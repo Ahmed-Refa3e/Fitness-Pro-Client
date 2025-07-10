@@ -6,7 +6,7 @@
 
     @for (int i = 1; i <= TotalPages; i++)
     {
-        var pageNumber = i;
+        int pageNumber = i;
         <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
             <button type="button" class="page-link" @onclick="() => OnPageChanged.InvokeAsync(pageNumber)">@pageNumber</button>
         </li>

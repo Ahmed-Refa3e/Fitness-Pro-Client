@@ -15,7 +15,7 @@
         <div class="col-md-3">
             <select class="form-select" @bind="selectedGovernorate" @bind:event="oninput" @onchange="OnGovernorateChanged">
                 <option value="">All Governorates</option>
-                @foreach (var gov in governorates)
+                @foreach (string? gov in governorates)
                 {
                     <option value="@gov">@gov</option>
                 }
@@ -25,7 +25,7 @@
         <div class="col-md-3">
             <select class="form-select" @bind="selectedCity">
                 <option value="">All Cities</option>
-                @foreach (var city in cities)
+                @foreach (string? city in cities)
                 {
                     <option value="@city">@city</option>
                 }
@@ -48,7 +48,7 @@
     else
     {
         <div class="row g-4">
-            @foreach (var gym in gyms.Data)
+            @foreach (Gym gym in gyms.Data)
             {
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">

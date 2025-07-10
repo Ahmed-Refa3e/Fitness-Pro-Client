@@ -49,7 +49,7 @@
     {
         errorMessage = null;
 
-        var result = await AuthService.LoginAsync(LoginRequest);
+        LoginResponse? result = await AuthService.LoginAsync(LoginRequest);
 
         if (result is not null && result.IsSuccess && result.Data is not null)
         {

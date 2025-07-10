@@ -7,7 +7,7 @@
         public string PictureUrl { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
-        public string Governorate { get; set; } = string.Empty; 
+        public string Governorate { get; set; } = string.Empty;
         public decimal MonthlyPrice { get; set; }
         public double AverageRating { get; set; }
         public int SubscriptionsCount { get; set; }

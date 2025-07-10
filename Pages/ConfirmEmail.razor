@@ -41,9 +41,9 @@
 
     protected override void OnInitialized()
     {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        Uri  uri = Navigation.ToAbsoluteUri(Navigation.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        var emailFromQuery = query.Get("email");
+        string? emailFromQuery = query.Get("email");
 
         if (!string.IsNullOrWhiteSpace(emailFromQuery))
         {

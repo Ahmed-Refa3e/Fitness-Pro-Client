@@ -7,7 +7,7 @@ namespace Fitness_Pro_Client.Services
     {
         public async Task<PagedGymResponse?> GetGymsAsync(int page = 1, int pageSize = 9, string? GymName = null, string? governorate = null, string? city = null)
         {
-            var query = $"?pageNumber={page}&pageSize={pageSize}";
+            string query = $"?pageNumber={page}&pageSize={pageSize}";
 
             if (!string.IsNullOrWhiteSpace(GymName))
                 query += $"&GymName={Uri.EscapeDataString(GymName)}";

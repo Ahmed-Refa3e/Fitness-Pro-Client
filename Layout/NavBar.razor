@@ -91,7 +91,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await localStorage.GetItemAsync<string>("token");
+        string? token = await localStorage.GetItemAsync<string>("token");
         isLoggedIn = !string.IsNullOrEmpty(token);
     }
 

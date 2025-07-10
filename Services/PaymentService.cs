@@ -9,11 +9,11 @@ namespace Fitness_Pro_Client.Services
         {
             var payload = new { onlineTrainingId = trainingId };
 
-            var response = await http.PostAsJsonAsync("api/Payments/create-checkout-session", payload);
+            HttpResponseMessage response = await http.PostAsJsonAsync("api/Payments/create-checkout-session", payload);
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = await response.Content.ReadAsStringAsync();
+                string error = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Payment failed: {error}");
                 return null;
             }

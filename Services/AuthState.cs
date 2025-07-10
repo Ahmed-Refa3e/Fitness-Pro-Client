@@ -8,7 +8,7 @@ namespace Fitness_Pro_Client.Services
     {
         public async Task<bool> IsLoggedInAsync()
         {
-            var token = await localStorage.GetItemAsStringAsync("token");
+            string? token = await localStorage.GetItemAsStringAsync("token");
             token = token?.Trim('"');
 
             return !string.IsNullOrWhiteSpace(token) && !IsTokenExpired(token);
@@ -16,17 +16,17 @@ namespace Fitness_Pro_Client.Services
 
         public async Task<string?> GetUserRoleAsync()
         {
-            var token = await localStorage.GetItemAsStringAsync("token");
+            string? token = await localStorage.GetItemAsStringAsync("token");
             token = token?.Trim('"');
 
             if (string.IsNullOrWhiteSpace(token)) return null;
 
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(token);
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwt = handler.ReadJwtToken(token);
 
-                var roleClaim = jwt.Claims.FirstOrDefault(c =>
+                Claim? roleClaim = jwt.Claims.FirstOrDefault(c =>
                     c.Type == ClaimTypes.Role || c.Type == "role" || c.Type.Contains("claims/role"));
 
                 return roleClaim?.Value;
@@ -50,8 +50,8 @@ namespace Fitness_Pro_Client.Services
 
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(token);
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwt = handler.ReadJwtToken(token);
                 return jwt.ValidTo < DateTime.UtcNow;
             }
             catch (Exception ex)

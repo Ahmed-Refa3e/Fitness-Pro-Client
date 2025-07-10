@@ -48,7 +48,7 @@
             }
             else
             {
-                @foreach (var training in CurrentTrainings)
+                @foreach (OnlineTrainingDto training in CurrentTrainings)
                 {
                     <div class="col-md-3">
                         <div class="card h-100 text-center border border-primary rounded-4 package-card transition">
@@ -108,8 +108,8 @@
     {
         errorMessage = null;
 
-        var isLoggedIn = await AuthState.IsLoggedInAsync();
-        var role = await AuthState.GetUserRoleAsync();
+        bool isLoggedIn = await AuthState.IsLoggedInAsync();
+        string? role = await AuthState.GetUserRoleAsync();
 
         if (!isLoggedIn)
         {
@@ -124,7 +124,7 @@
             return;
         }
 
-        var paymentUrl = await PaymentService.CreatePaymentSessionAsync(trainingId);
+        string? paymentUrl = await PaymentService.CreatePaymentSessionAsync(trainingId);
 
         if (!string.IsNullOrWhiteSpace(paymentUrl))
         {

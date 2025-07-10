@@ -40,6 +40,6 @@ public class LocationService
 
     public Task<List<string>> GetCitiesAsync(string governorate)
     {
-        return Task.FromResult(locations.TryGetValue(governorate, out var cities) ? cities : []);
+        return Task.FromResult(locations.TryGetValue(governorate, out List<string>? cities) ? cities : []);
     }
 }

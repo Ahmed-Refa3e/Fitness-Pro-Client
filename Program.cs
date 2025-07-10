@@ -5,7 +5,7 @@ using Fitness_Pro_Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -27,25 +27,25 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped(sp =>
 {
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
     return new GymService(factory.CreateClient("AuthorizedClient"));
 });
 
 builder.Services.AddScoped(sp =>
 {
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
     return new CoachService(factory.CreateClient("AuthorizedClient"));
 });
 
 builder.Services.AddScoped(sp =>
 {
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
     return new AuthService(factory.CreateClient("AuthorizedClient"));
 });
 
 builder.Services.AddScoped(sp =>
 {
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
     return new PaymentService(factory.CreateClient("AuthorizedClient"));
 });
 

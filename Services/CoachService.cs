@@ -7,9 +7,9 @@ namespace Fitness_Pro_Client.Services
     public class CoachService(HttpClient http)
     {
         public async Task<PagedCoachResponse?> GetCoachesAsync(int page = 1, int pageSize = 9, string? CoachName = null,
-            double? MinRating = null, double? MaxRating = null , string? SortBy = null)
+            double? MinRating = null, double? MaxRating = null, string? SortBy = null)
         {
-            var query = $"?pageNumber={page}&pageSize={pageSize}";
+            string query = $"?pageNumber={page}&pageSize={pageSize}";
 
             if (MinRating.HasValue)
                 query += $"&MinRating={MinRating.Value}";

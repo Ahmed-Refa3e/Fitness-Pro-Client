@@ -7,7 +7,7 @@ namespace Fitness_Pro_Client.Helpers
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var token = await localStorage.GetItemAsStringAsync("token");
+            string? token = await localStorage.GetItemAsStringAsync("token");
 
             if (!string.IsNullOrWhiteSpace(token))
             {
