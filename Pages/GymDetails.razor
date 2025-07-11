@@ -1,5 +1,4 @@
 ﻿@page "/Gyms/{id:int}"
-@using Fitness_Pro_Client.Models.Gym
 @inject GymService GymService
 
 @if(gym == null){
@@ -81,13 +80,4 @@ else
 }
 
 
-@code {
-    [Parameter] public int id { get; set; }
 
-    private GymDetailsDto? gym;
-
-    protected override async Task OnInitializedAsync()
-    {
-        gym = await GymService.GetGymByIdAsync(id);
-    }
-}

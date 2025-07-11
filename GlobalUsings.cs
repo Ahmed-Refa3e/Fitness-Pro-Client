@@ -1,0 +1,12 @@
+﻿global using Blazored.LocalStorage;
+global using Fitness_Pro_Client;
+global using Fitness_Pro_Client.Helpers;
+global using Fitness_Pro_Client.Services;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Fitness_Pro_Client.Models.General;
+global using Fitness_Pro_Client.Models.OnlineTraining;
+global using Microsoft.AspNetCore.Components;
+global using Fitness_Pro_Client.Models.Account;
+global using Fitness_Pro_Client.Models.Gym;
+global using System.Net.Http.Headers;

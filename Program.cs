@@ -1,10 +1,3 @@
-using Blazored.LocalStorage;
-using Fitness_Pro_Client;
-using Fitness_Pro_Client.Helpers;
-using Fitness_Pro_Client.Services;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
