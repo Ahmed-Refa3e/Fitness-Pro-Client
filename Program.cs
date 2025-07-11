@@ -18,6 +18,12 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("https://fitnesspro.runasp.net/")
 });
 
+builder.Services.AddHttpClient("StaticClient", client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+});
+
+
 builder.Services.AddScoped(sp =>
 {
     IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -42,7 +48,11 @@ builder.Services.AddScoped(sp =>
     return new PaymentService(factory.CreateClient("AuthorizedClient"));
 });
 
-builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped(sp =>
+{
+    IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
+    return new LocationService(factory.CreateClient("StaticClient"));
+});
 
 builder.Services.AddScoped<AuthState>();
 
