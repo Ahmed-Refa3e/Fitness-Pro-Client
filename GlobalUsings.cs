@@ -11,3 +11,6 @@ global using Fitness_Pro_Client.Models.Account;
 global using Fitness_Pro_Client.Models.Gym;
 global using System.Net.Http.Headers;
 global using System.Text.Json;
+global using System.ComponentModel.DataAnnotations;
+global using System.Text.RegularExpressions;
+global using Fitness_Pro_Client.Validations;

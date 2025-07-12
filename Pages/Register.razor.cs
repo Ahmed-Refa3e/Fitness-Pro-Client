@@ -8,9 +8,11 @@ namespace Fitness_Pro_Client.Pages
             Role = ""
         };
         private string? errorMessage;
+        private bool isSubmitting = false;
 
         private async Task HandleRegister()
         {
+            isSubmitting = true;
             bool success = false;
 
             if (registerModel.Role == "Coach")
@@ -30,6 +32,7 @@ namespace Fitness_Pro_Client.Pages
             {
                 errorMessage = "Registration failed. This email is already taken, please choose another..";
             }
+            isSubmitting = false;
         }
     }
 }

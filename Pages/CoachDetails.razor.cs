@@ -45,7 +45,7 @@ public partial class CoachDetails
 
         if (role != "Trainee")
         {
-            errorMessage = "? Only Trainee users can subscribe to training packages.";
+            errorMessage = "Only Trainee users can subscribe to training packages.";
             return;
         }
 
@@ -57,7 +57,7 @@ public partial class CoachDetails
         }
         else
         {
-            errorMessage = "?? Failed to initiate payment session. Please try again later.";
+            errorMessage = "Failed to initiate payment session. Please try again later.";
         }
     }
 }

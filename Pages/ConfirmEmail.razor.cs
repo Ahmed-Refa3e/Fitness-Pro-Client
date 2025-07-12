@@ -10,7 +10,7 @@ namespace Fitness_Pro_Client.Pages
         protected override void OnInitialized()
         {
             Uri uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            System.Collections.Specialized.NameValueCollection? query = System.Web.HttpUtility.ParseQueryString(uri.Query);
             string? emailFromQuery = query.Get("email");
 
             if (!string.IsNullOrWhiteSpace(emailFromQuery))
@@ -24,14 +24,14 @@ namespace Fitness_Pro_Client.Pages
             isSubmitting = true;
             message = string.Empty;
 
-            var result = await AuthService.ConfirmEmailAsync(otpModel.Email!, otpModel.Code!);
+            (bool IsSuccess, string? ErrorMessage) = await AuthService.ConfirmEmailAsync(otpModel.Email!, otpModel.Code!);
 
-            if (result.IsSuccess)
+            if (IsSuccess)
             {
                 message = "? Email confirmed successfully!";
                 messageClass = "alert-success";
 
-                await Task.Delay(1500);
+                
                 Navigation.NavigateTo("/login");
             }
             else
